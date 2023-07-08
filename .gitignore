@@ -1,0 +1,15 @@
+/shelf/
+/workspace.xml
+/httpRequests/
+/dataSources/
+/dataSources.local.xml
+
+*.env
+*.log
+*.sqlite3
+.idea
+/media
+__pycache__/
+venv/
+*.json
+**/__init__.py
