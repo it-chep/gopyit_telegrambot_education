@@ -1,21 +1,20 @@
+from tg_bot.service.markups import InlineMarkup, ReplyMarkup
+from tg_bot.service.message_service import MessageService
+from tg_bot.service.users_service import TelegramUserService
 from tg_bot.repository.repository import Repository
 
 
 def start(message, bot):
-    bot.send_message(message.chat.id, 'Привет заполни свою форму. Напиши email')
-    Repository.redis.set(key=f'{message.chat.id}', value='email')
+    msg = MessageService().get_start_message()
+    markup = ReplyMarkup()
+    Repository().redis.set(key=f'{message.chat.id}', value='1234')
+    reply_markup = markup.universal_reply_markup([
+        [('Поделиться номером телефона', 'phone')]
+    ])
+
+    bot.send_message(message.chat.id, msg, reply_markup=reply_markup)
     return
 
 
 def fork(message, bot):
-    print('fork')
-    text = ''
-    try:
-        if message.text:
-            text = message.text
-        else:
-            text = 'Иди гуляй'
-    except Exception as e:
-        print(f"Error: {e}")
-    bot.send_message(message.chat.id, text)
-    return
+    ...

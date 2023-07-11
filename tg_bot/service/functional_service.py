@@ -1,4 +1,6 @@
 class FunctionalService:
+    def __init__(self):
+        pass
 
     def save_photo(self, message, bot):
         photo = message.photo[-1]

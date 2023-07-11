@@ -6,7 +6,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -19,15 +18,9 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('date', models.DateField()),
-                ('status', models.CharField(choices=[('free', 'Свободный день'), ('partially_booked', 'Частично занят'), ('fully_booked', 'Полностью занят'), ('day_off', 'Выходной')], max_length=40)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='NewTattoo',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('photo_pass', models.CharField(max_length=255)),
-                ('name', models.CharField(max_length=255)),
+                ('status', models.CharField(choices=[('free', 'Свободный день'), ('partially_booked', 'Частично занят'),
+                                                     ('fully_booked', 'Полностью занят'), ('day_off', 'Выходной')],
+                                            max_length=40)),
             ],
         ),
         migrations.CreateModel(
@@ -59,8 +52,11 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('time', models.TimeField()),
                 ('date_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='tg_bot.dates')),
-                ('expert', models.ForeignKey(limit_choices_to={'is_admin': True}, on_delete=django.db.models.deletion.CASCADE, related_name='booking_expert', to=settings.AUTH_USER_MODEL)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='booking_user', to=settings.AUTH_USER_MODEL)),
+                ('expert',
+                 models.ForeignKey(limit_choices_to={'is_admin': True}, on_delete=django.db.models.deletion.CASCADE,
+                                   related_name='booking_expert', to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='booking_user',
+                                           to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]

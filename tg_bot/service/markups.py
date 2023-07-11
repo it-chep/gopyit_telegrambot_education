@@ -1,32 +1,39 @@
-from telebot import types
+from typing import Optional, List, Tuple
+from tg_bot.bot_configure.markups import *
 
 
 class ReplyMarkup:
 
     def __init__(self):
-        self.markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+        self.markup = CustomReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 
-    def get_reply_markup(self):
-        self.markup.add('Привет, держи reply кнопку')
-        return self.markup
+    def universal_reply_markup(self, buttons: Optional[List[List[Tuple[str, str]]]]) -> CustomReplyKeyboardMarkup:
+        """
+        :param buttons:
+        :return: markup
 
-    def get_more_reply_markups(self):
-        self.markup.add('Привет, держи reply кнопку 1')
-        self.markup.add('Привет, держи reply кнопку 2')
-        self.markup.add('Привет, держи reply кнопку 3')
-        self.markup.add('Привет, держи reply кнопку 4')
-        self.markup.add('Привет, держи reply кнопку 5')
-        self.markup.add('Привет, держи reply кнопку 6')
-        return self.markup
+        buttons = [
+            [('Текст1', ''), ('Текст2', 'phone')],
+            [('Текст3', 'geo'), ('Текст 4', '')],
+        ]
 
-    def phone_number_markup(self):
-        phone_button = types.KeyboardButton(text="Поделиться номером телефона", request_contact=True)
-        self.markup.add(phone_button)
-        return self.markup
+        В наружном массиве подаются все кнопки, во внутреннем массиве указываются кнопки в строке
+        """
 
-    def geo_markup(self):
-        geo_button = types.KeyboardButton(text="Поделиться геолокацией", request_location=True)
-        self.markup.add(geo_button)
+        btns = []
+
+        for i in buttons:
+            for j in i:
+                btn_type = j[1].lower()
+                if btn_type == 'phone':
+                    btns.append(CustomKeyboardButton(j[0], request_contact=True))
+                elif btn_type == 'geo':
+                    btns.append(CustomKeyboardButton(j[0], request_location=True))
+                else:
+                    btns.append(CustomKeyboardButton(j[0]))
+            self.markup.add(*btns)
+            btns = []
+
         return self.markup
 
     def clean_markup(self):
@@ -37,26 +44,32 @@ class ReplyMarkup:
 class InlineMarkup:
 
     def __init__(self):
-        self.markup = types.InlineKeyboardMarkup(row_width=5)
+        self.markup = CustomInlineKeyboardMarkup()
 
-    def get_inline_markup(self):
-        btn = types.InlineKeyboardButton('Первая inline кнопка', callback_data='btn1')
-        self.markup.add(btn)
-        return self.markup
+    def universal_inline_markup(self, buttons: Optional[List[List[Tuple[str, str, str]]]]):
+        """
+            :param buttons:
+            :return: markup
 
-    def get_more_inline_markup(self):
-        btn1 = types.InlineKeyboardButton('1', callback_data='btn1')
-        btn2 = types.InlineKeyboardButton('2', callback_data='btn2')
-        btn3 = types.InlineKeyboardButton('3  ', callback_data='btn3')
-        btn4 = types.InlineKeyboardButton('4', callback_data='btn4')
-        btn5 = types.InlineKeyboardButton('5', callback_data='btn5')
+            buttons = [
+                [('Текст1', 'data', 'type' ), ('Текст2', 'https://google.com', 'url')],
+                [('Текст3', 'data', 'type'), ('Текст 4', 'https://google.com', 'web_app')],
+            ]
 
-        self.markup.add(btn1, btn2, btn3, btn4, btn5)
-        return self.markup
+            В наружном массиве подаются все кнопки, во внутреннем массиве указываются кнопки в строке
+        """
+        btns = []
 
-    def url_markup(self):
-        btn_with_url = types.InlineKeyboardButton('Ссылка на канал GOPYIT',
-                                                  url='https://www.youtube.com/watch?v=_Guix7ZKa1Q&t=19s')
+        for i in buttons:
+            for j in i:
+                btn_type = j[2].lower()
+                if btn_type == 'url':
+                    btns.append(CustomInlineKeyboardButton(text=j[0], url=j[1]))
+                elif btn_type == 'web_app':
+                    btns.append(CustomInlineKeyboardButton(text=j[0], web_app=j[1]))
+                else:
+                    btns.append(CustomInlineKeyboardButton(text=j[0], callback_data=j[1]))
 
-        self.markup.add(btn_with_url)
+            self.markup.add(*btns)
+            btns = []
         return self.markup

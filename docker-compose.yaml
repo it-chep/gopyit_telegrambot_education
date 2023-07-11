@@ -1,0 +1,42 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: "gopyit"
+      POSTGRES_USER: "gopyit"
+      POSTGRES_PASSWORD: "gopyit"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - .:/var/lib/postgresql/data
+    ports:
+      - "5432"
+
+  app:
+    build: "."
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    environment:
+      db_host: postgres
+    volumes:
+      - ./logs:/telegram_bot/logs
+
+  redis:
+    image: redis
+    ports:
+      - "6379"
+    depends_on:
+      - app
+
+  nginx:
+    build: "./nginx"
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    volumes:
+      - ./templates/css:/telegram_bot/static/css
+      - ./templates/img:/telegram_bot/static/img
+      - ./templates/js:/telegram_bot/static/js
